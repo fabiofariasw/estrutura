@@ -1,12 +1,15 @@
 import { BrowserRouter } from 'react-router-dom';
 import GlobalStyle from './styles/global';
 import { Routes } from './routes/routes';
+import { PageProvider } from './contexts/pageContext';
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <Routes />
+        <PageProvider>
+          <Routes />
+        </PageProvider>
       </BrowserRouter>
       <GlobalStyle />
     </>

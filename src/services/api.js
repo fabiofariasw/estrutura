@@ -1,6 +1,6 @@
 import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: 'http://colocarapi.com',
+    baseURL: 'https://api.github.com',
     timeout: 5000,
 })

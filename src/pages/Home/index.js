@@ -51,8 +51,8 @@ export function Home() {
             setLoading(false);
             if(!totalPages) {
                 const arrayLink = headers.link.split(',');
-                const filterLastRequisition = arrayLink.filter(e => {
-                    if (e.endsWith('rel=\"last\"')) {
+                const filterLastRequisition = arrayLink.filter((e) => 
+                    {if (e.endsWith('rel=\"last\"')) {
                         return e;
                     };
                 });

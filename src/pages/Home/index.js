@@ -40,36 +40,7 @@ export function Home() {
     const auxInitial = 6;
     const auxEnd = 8
     
-    async function getIssues() {
-        localStorage.setItem('numberPage', page);
-        setLoading(true)
-        
-        try {
-            const { data, headers } = await api.get(`repos/facebook/react/issues?per_page=${limit}&page=${page}`);
-            setData(data);
-            setCurrentData(data);
-            setLoading(false);
-            if(!totalPages) {
-                const arrayLink = headers.link.split(',');
-                const filterLastRequisition = arrayLink.filter((e) => 
-                    {if (e.endsWith('rel=\"last\"')) {
-                        return e;
-                    };
-                });
-                
-                if (filterLastRequisition && filterLastRequisition.length > 0) {
-                    const indexSearch = filterLastRequisition[0].indexOf('&page=');
-                    const quantityByPages = filterLastRequisition[0].substring(indexSearch + auxInitial, indexSearch + auxEnd);
-                    setTotalPages(quantityByPages);
-                }
-            };
-        }
-        catch (err) {
-            setLoading(false)
-            console.log(err);
-        }
-    }
-
+    
     const debouncedFilter = useDebouncedCallback(() => {
         objectMount()
     }, 1000)
@@ -116,7 +87,7 @@ export function Home() {
             setCurrentData(data)
         }
     }
-
+    
     function objectMount() {
         const obj = data.map(item => {
             return {
@@ -126,48 +97,77 @@ export function Home() {
                 comments: item.comments,
             }
         })
-
+        
         const namesFilter = obj.filter(item => item.title.includes(currentFilterName))
         setCurrentData(namesFilter)
-
+        
         if (currentFilterName.trim().length === 0) {
             setCurrentData(data)
         }
     }
-
+    
     function handleFilterName(e) {
         setCurrentFilterName(e.target.value)
         debouncedFilter()
     }
-
+    
     function preview() {
         if (page > 1) {
             setPage(page - 1);
         }
     }
-
+    
     function next() {
         if (page < totalPages) {
             return setPage(page + 1);
         }
     }
-
+    
     function previewFirst() {
         if (page > 1) {
             setPage(1);
         }
     }
-
+    
     function nextLast() {
         if (page < totalPages) {
             return setPage(totalPages);
         }
     }
-
+    
     useEffect(() => {
+        async function getIssues() {
+            localStorage.setItem('numberPage', page);
+            setLoading(true)
+            
+            try {
+                const { data, headers } = await api.get(`repos/facebook/react/issues?per_page=${limit}&page=${page}`);
+                setData(data);
+                setCurrentData(data);
+                setLoading(false);
+                if(!totalPages) {
+                    const arrayLink = headers.link.split(',');
+                    const filterLastRequisition = arrayLink.filter((e) => 
+                        {if (e.endsWith('rel=\"last\"')) {
+                            return e;
+                        };
+                    });
+                    
+                    if (filterLastRequisition && filterLastRequisition.length > 0) {
+                        const indexSearch = filterLastRequisition[0].indexOf('&page=');
+                        const quantityByPages = filterLastRequisition[0].substring(indexSearch + auxInitial, indexSearch + auxEnd);
+                        setTotalPages(quantityByPages);
+                    }
+                };
+            }
+            catch (err) {
+                setLoading(false)
+                console.log(err);
+            }
+        }
         getIssues()
     }, [page])
-
+    
     const templateBodyName = (rowData, e) => {
         const index = e.rowIndex + 1
         const result = index % 2

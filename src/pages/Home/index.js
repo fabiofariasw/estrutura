@@ -74,8 +74,8 @@ export function Home() {
             
             async function getFilter() {
                 try {
-                    const response = await api.get(`repos/facebook/react/issues?per_page=10&page=1&sort=${currentSort}&direction=${currentDirection}`)
-                    setCurrentData(response.data)
+                    const { data } = await api.get(`repos/facebook/react/issues?per_page=10&page=1&sort=${currentSort}&direction=${currentDirection}`)
+                    setCurrentData(data)
                 }
                 catch (err) {
                     console.log(err)
@@ -89,7 +89,7 @@ export function Home() {
     }
     
     function objectMount() {
-        const obj = data.map(item => {
+        const obj = currentData.map(item => {
             return {
                 title: item.title,
                 state: item.state,
@@ -98,7 +98,7 @@ export function Home() {
             }
         })
         
-        const namesFilter = obj.filter(item => item.title.includes(currentFilterName))
+        const namesFilter = obj.filter(item => item.title.toLowerCase().includes(currentFilterName))
         setCurrentData(namesFilter)
         
         if (currentFilterName.trim().length === 0) {
@@ -107,7 +107,7 @@ export function Home() {
     }
     
     function handleFilterName(e) {
-        setCurrentFilterName(e.target.value)
+        setCurrentFilterName(e.target.value.trim().toLowerCase())
         debouncedFilter()
     }
     
@@ -175,12 +175,12 @@ export function Home() {
         if (result !== 0) {
             return (             
                 <ItemPaginationOdd>
-                        <p>Title: {rowData.title}</p>
-                        <span>State: {rowData.state}</span>
+                        <p><strong>Title:</strong> {rowData.title}</p>
+                        <span><strong>State:</strong> {rowData.state}</span>
                         <br />
-                        <span>Created At: {rowData.created_at}</span>
+                        <span><strong>Created At:</strong> {rowData.created_at}</span>
                         <br />
-                        <span>Comments: {rowData.comments}</span>
+                        <span><strong>Comments:</strong> {rowData.comments}</span>
                 </ItemPaginationOdd>
             )
         }
@@ -188,12 +188,12 @@ export function Home() {
         else {
             return (
                 <ItemPagination>
-                        <p>Title: {rowData.title}</p>
-                        <span>State: {rowData.state}</span>
+                        <p><strong>Title:</strong> {rowData.title}</p>
+                        <span><strong>State:</strong> {rowData.state}</span>
                         <br />
-                        <span>Created At: {rowData.created_at}</span>
+                        <span><strong>Created At:</strong> {rowData.created_at}</span>
                         <br />
-                        <span>Comments: {rowData.comments}</span>
+                        <span><strong>Comments:</strong> {rowData.comments}</span>
                 </ItemPagination>
             )
         }
